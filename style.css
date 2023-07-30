@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+img {
+  border-radius: 8px;
+}
+
 button {
   cursor: pointer;
 }
