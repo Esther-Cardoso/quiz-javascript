@@ -6,8 +6,10 @@ const nextQuestionButton = document.querySelector('.next-question')
 const img = document.querySelector('.img')
 
 startGameButton.addEventListener('click', startGame)
+nextQuestionButton.addEventListener('click', displayNextQuestion)
 
 let currentQuestionIndex = 0 // pergunta atual
+let totalCorrect = 0
 
 function startGame() {
   startGameButton.classList.add('hide')
@@ -16,8 +18,10 @@ function startGame() {
 }
 
 function displayNextQuestion() {
-  while(answersContainer.firstChild) {
-    answersContainer.removeChild(answersContainer.firstChild) // remover os filhos
+  resetState()
+
+  if(questions.length === currentQuestionIndex) {
+    return finishGame()
   }
 
   // colocando a pergunta do banco de perguntas no elemento span
@@ -39,12 +43,21 @@ function displayNextQuestion() {
   })
 }
 
+function resetState() {
+  while(answersContainer.firstChild) {
+    answersContainer.removeChild(answersContainer.firstChild) // remover os filhos
+  }
+
+  document.body.removeAttribute('class') // para voltar a cor normal depois de responder a pergunta
+  nextQuestionButton.classList.add('hide') // para sumir com o botão depois de responder uma pergunta e for para a proxima
+}
 
 function selectAnswer(event) {
   const answerClicked = event.target
 
   if(answerClicked.dataset.correct) {
     document.body.classList.add('correct')
+    totalCorrect++
   } else {
     document.body.classList.add('incorrect')
   }
@@ -63,9 +76,37 @@ function selectAnswer(event) {
   currentQuestionIndex++
 }
 
+function finishGame() {
+  const totalQuestion = questions.length
+  const performance = Math.floor(totalCorrect * 100 / totalQuestion)
 
+  let message = ''
 
+  switch (true) {
+    case (performance >= 90):
+      message = 'Excelente :)'
+      break
+    case (performance >= 70):
+      message = 'Muito bom :)'
+      break
+    case (performance >= 50):
+      message = 'Bom'
+      break
+    default:
+      message = 'Pode melhorar :('
+  }
 
+  questionsContainer.innerHTML =
+  `
+    <p class="final-message">
+    Você acertou ${totalCorrect} de ${totalQuestion} questões!
+    <span>Resultado: ${message}</span>
+    </p>
+    <button onclick=window.location.reload() class="button">
+      Refazer teste
+    </button>
+  `
+}
 
 // banco de perguntas
 const questions = [
@@ -121,7 +162,7 @@ const questions = [
   },
   {
     question: 'Qual é o mecanismo de defesa de um gambá?',
-    img: 'https://segredosdomundo.r7.com/wp-content/uploads/2020/04/gamba-o-famoso-animal-que-e-conhecido-por-ser-fedido-1-1024x683.jpg',
+    img: 'https://th.bing.com/th/id/R.528a2c26cbadfd6e7aa2255788a87aba?rik=zLLbNVxPN4CWhA&riu=http%3a%2f%2f4.bp.blogspot.com%2f-Vgawu9u99uU%2fUzjs3twZe8I%2fAAAAAAAAA4Y%2fe2tL_alj0V8%2fs1600%2fgamb%c3%a1_didelphis_quint_csbyo_20100628_0009.jpg&ehk=soLZT63N49gkTMF%2fehFnFKQvE55DQD%2f5a8PIR%2f474QQ%3d&risl=&pid=ImgRaw&r=0',
     answers: [
       { text: "Garras afiadas", correct: false },
       { text: "Saliva venenosa", correct: false },

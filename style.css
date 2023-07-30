@@ -6,6 +6,9 @@
 
 img {
   border-radius: 8px;
+  height: 250px;
+  width: 400px;
+  object-fit: cover;
 }
 
 button {
@@ -81,6 +84,17 @@ body {
 
 .answer:disabled {
   cursor: not-allowed;
+}
+
+.final-message {
+  font-family: sans-serif;
+  font-size: 20px;
+  text-align: center;
+}
+
+.final-message span {
+  display: block;
+  margin-top: 8px;
 }
 
 .hide {
